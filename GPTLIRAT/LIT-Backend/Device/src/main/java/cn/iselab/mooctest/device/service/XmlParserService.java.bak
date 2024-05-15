@@ -1,0 +1,70 @@
+package cn.iselab.mooctest.device.service;
+
+import cn.iselab.mooctest.device.common.constant.ADBCommandConstants;
+import cn.iselab.mooctest.device.common.constant.PathConstants;
+import cn.iselab.mooctest.device.model.UINodeVO;
+import cn.iselab.mooctest.device.service.handler.SAXHandler;
+import cn.iselab.mooctest.device.util.CommandUtil;
+import com.android.ddmlib.AdbCommandRejectedException;
+import com.android.ddmlib.IDevice;
+import com.android.ddmlib.SyncException;
+import com.android.ddmlib.TimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by zsx on 2018/12/18.
+ */
+public class XmlParserService {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
+    private IDevice iDevice;
+
+    public XmlParserService(IDevice iDevice) {
+        this.iDevice = iDevice;
+    }
+
+    public List<UINodeVO> getUINode() {
+        pullXml();
+        List<UINodeVO> nodes = new ArrayList<>();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        try {
+            SAXParser parser = factory.newSAXParser();
+            SAXHandler handler = new SAXHandler();
+            parser.parse(new File(PathConstants.LOCAL_XML_PATH), handler);
+            nodes = handler.getNodeList();
+        } catch (ParserConfigurationException e) {
+            log.error("getUINode ParserConfigurationException:{}", e);
+        } catch (SAXException e) {
+            log.error("getUINode SAXException:{}", e);
+        } catch (IOException e) {
+            log.error("getUINode IOException:{}", e);
+        }
+        return nodes;
+    }
+
+   private void pullXml() {
+        try {
+            CommandUtil.executeShellCommand(iDevice, ADBCommandConstants.DUMP_UI_XML);
+            iDevice.pullFile(PathConstants.REMOTE_XML_PATH, PathConstants.LOCAL_XML_PATH);
+        }  catch (SyncException e) {
+            log.error("pullXml SyncException:{}", e);
+        } catch (IOException e) {
+            log.error("pullXml IOException:{}", e);
+        } catch (AdbCommandRejectedException e) {
+            log.error("pullXml AdbCommandRejectedException:{}", e);
+        } catch (TimeoutException e) {
+            log.error("pullXml TimeoutException:{}", e);
+        }
+    }
+}

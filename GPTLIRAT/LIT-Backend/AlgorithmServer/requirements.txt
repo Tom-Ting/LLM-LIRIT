@@ -1,0 +1,9 @@
+urllib3==1.26.12
+chardet==5.0.0
+charset_normalizer==2.0.12
+baidu_aip==4.16.7
+Django==3.2.16
+numpy==1.19.5
+opencv_python==4.6.0.66
+sentence_transformers==2.2.2
+tensorflow==2.6.2

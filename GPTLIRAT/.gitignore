@@ -1,0 +1,17 @@
+﻿**/__pycache__
+**/venv
+**/.idea
+**/node_modules
+
+**/target
+**/scriptStep
+**/python3.exe
+**/replays
+**/scripts
+LIT-Backend/log/*
+LIT-Backend/sdk/android-sdk-windows/*.png
+LIT-Backend/imageCache/*
+LIT-Backend/AlgorithmServer/AlgorithmServer/models/**
+LIT-Backend/AlgorithmServer/AlgorithmServer/cache/*.png
+LIT-Backend/cache/*.png
+LIT-Backend/LIT/log
